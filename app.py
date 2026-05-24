@@ -63,7 +63,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Helper function to load models
-@st.cache_resource
 def load_saved_model(model_path):
     if os.path.exists(model_path):
         return joblib.load(model_path)
