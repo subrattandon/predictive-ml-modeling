@@ -137,6 +137,7 @@ if task == "🩺 Breast Cancer Classification":
             with res_col2:
                 st.write(f"Confidence score: **{max(prob)*100:.1f}%**")
                 st.progress(float(max(prob)))
+                st.write(f"Raw probabilities: `{list(prob)}`")
         else:
             st.warning("⚠️ Best classifier model not loaded. Run `python main.py` first to train it.")
 
