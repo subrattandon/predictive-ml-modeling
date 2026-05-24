@@ -112,19 +112,21 @@ if task == "🩺 Breast Cancer Classification":
             mean_smoothness = st.slider("Mean Smoothness", 0.05, 0.16, 0.096)
             mean_concavity = st.slider("Mean Concavity", 0.0, 0.45, 0.088)
 
-        # We construct a mock scaled input vector (using means for remaining features)
-        # Breast Cancer has 30 features
-        base_features = np.zeros((1, 30))
-        base_features[0, 0] = mean_radius
-        base_features[0, 1] = mean_texture
-        base_features[0, 2] = mean_perimeter
-        base_features[0, 3] = mean_area
-        base_features[0, 4] = mean_smoothness
-        base_features[0, 7] = mean_concavity
+        bc = load_breast_cancer(as_frame=True)
+        sample_features = bc.data.median().copy()
+        
+        sample_features["mean radius"] = mean_radius
+        sample_features["mean texture"] = mean_texture
+        sample_features["mean perimeter"] = mean_perimeter
+        sample_features["mean area"] = mean_area
+        sample_features["mean smoothness"] = mean_smoothness
+        sample_features["mean concavity"] = mean_concavity
+        
+        input_df = pd.DataFrame([sample_features])
         
         if clf_model is not None:
-            prediction = clf_model.predict(base_features)[0]
-            prob = clf_model.predict_proba(base_features)[0] if hasattr(clf_model, "predict_proba") else [0.5, 0.5]
+            prediction = clf_model.predict(input_df)[0]
+            prob = clf_model.predict_proba(input_df)[0] if hasattr(clf_model, "predict_proba") else [0.5, 0.5]
             
             st.markdown("---")
             res_col1, res_col2 = st.columns(2)
@@ -196,15 +198,19 @@ else:
         with col_in3:
             s5 = st.slider("Serum blood measurement 5", -0.15, 0.15, 0.0)
             
-        base_features = np.zeros((1, 10))
-        base_features[0, 0] = age
-        base_features[0, 2] = bmi
-        base_features[0, 3] = bp
-        base_features[0, 4] = s1
-        base_features[0, 8] = s5
+        diab = load_diabetes(as_frame=True)
+        sample_features = diab.data.median().copy()
+        
+        sample_features["age"] = age
+        sample_features["bmi"] = bmi
+        sample_features["bp"] = bp
+        sample_features["s1"] = s1
+        sample_features["s5"] = s5
+        
+        input_df = pd.DataFrame([sample_features])
         
         if reg_model is not None:
-            prediction = reg_model.predict(base_features)[0]
+            prediction = reg_model.predict(input_df)[0]
             st.markdown("---")
             st.info(f"📈 Predicted Disease Progression Score: **{prediction:.1f}**")
         else:
